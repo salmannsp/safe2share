@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure File Embedder</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    </head>
+<body>
+    <header>
+            <h1><i class="fas fa-exchange-alt"></i> Secure File Embedder</h1>
+            <p>Easily bypass Gmail and Drive restrictions by converting files into HTML.</p>
+        </header>
+    <style>
+    * {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        #container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            border-top: 3px solid #3498db;
+            border-bottom: 3px solid #3498db;
+        }
+        h3 {
+            text-align: center;
+            color: #3498db;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        input[type="file"], input[type="password"], input[type="text"]
+        {
+        font-size: 1rem;
+        border-radius: 5px;
+        }
+    header {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #2d3436;
+    }
+
+    header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    header h1 i {
+    color: #0984e3;
+    }
+    
+    header p {
+    color: #636e72;
+}
+        
+    button {
+            background-color: #3498db;
+            color: #ffffff;
+            font-weight: bold;
+            border: none;
+            padding: 10px 0;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            width: 100%;
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        small {
+            display: block;
+            text-align: center;
+            color: #6c757d;
+            margin-top: 15px;
+        }
+        .center-text {
+        text-align: center;
+        }
+        .whatsapp-link {
+    display: inline-block;
+    background-color: #25d366;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    }
+    footer {
+        text-align: center;
+        margin-top: 2rem;
+        color: #636e72;
+        font-size: 0.9rem;
+      }
+    @media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+    
+    .hero-section {
+        padding: 1rem;
+    }
+    
+    .drop-area {
+        padding: 2rem;
+    }
+}
+
+
+    </style>
+<div id="container" class="container">
+    <h3>Upload File</h3>
+    <p class="center-text">Securely share files without virus alerts</p>
+
+    <form>
+        <div class="form-group">
+            <input type="file" class="form-control" id="fileid">
+        </div>
+        <div class="form-group">
+            <label for="passwordid">Set Open Password:</label>
+            <input type="password" class="form-control" id="passwordid">
+        </div>
+        <div class="form-group">
+            <label for="textid">Message:</label>
+            <input type="text" class="form-control" id="textid">
+        </div>
+        <button type="button" class="btn btn-block" onclick="build()">Build Embedded HTML File</button>
+    </form>
+
+    <script>
+        var file = "";
+        var filebase64 = "";
+
+        function build() {
+            var fileobject = document.getElementById("fileid");
+            file = fileobject.files[0];
+
+            var fileReader = new FileReader();
+            fileReader.onload = function (event) {
+                filebase64 = fileReader.result.replace('data:', '').replace(/^.+,/, '');
+                generatehtml();
+            };
+            fileReader.readAsDataURL(file);
+        }
+
+        function xor(input) {
+            var result = "";
+            var password = document.getElementById("passwordid").value;
+            for (let i = 0; i < input.length; ++i) {
+                result += String.fromCharCode(password.charCodeAt(i % password.length) ^ input.charCodeAt(i));
+            }
+            return result;
+        }
+
+        function generatehtml() {
+            let message = document.getElementById("textid").value;
+            let htmlstring = "<!DOCTYPE html>\n" +
+                "<html lang='en'>\n" +
+                "<head>\n" +
+                "<meta charset='UTF-8'>\n" +
+                "<title>" + file.name + "</title>\n" +
+                "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css'>\n" +
+                "<style>\n" +
+                "body { font-family: 'Arial', sans-serif; background-color: #f8f9fa; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }\n" +
+                "#container { max-width: 600px; width: 90%; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); background-color: #ffffff; border-top: 3px solid #3498db; }\n" +
+                "h3 { text-align: center; color: #3498db; margin-bottom: 20px; font-weight: bold; }\n" +
+                "button { background-color: #3498db; color: #ffffff; font-weight: bold; border: none; padding: 10px 0; border-radius: 5px; transition: background-color 0.3s; width: 100%; display: block; text-align: center; margin-top: 10px; }\n" +
+                "button:hover { background-color: #2980b9; }\n" +
+                "small { display: block; text-align: center; color: #6c757d; margin-top: 15px; }\n" +
+                "<\/style>\n" +
+                "<\/head>\n" +
+                "<body>\n" +
+                "<div id='container'>\n" +
+                "<h3>Retrieve Secure File</h3>\n" +
+                "<p><strong>Message:</strong> " + message + "<\/p>\n" +
+                "<label>Enter Decryption Password:</label><br>\n" +
+                "<input type='password' id='passwordid' placeholder='Enter password' class='form-control'><br>\n" +
+                "<button onclick='retrieveFile()'>Retrieve File<\/button>\n" +
+                "<small>Developed by <a href='https://www.facebook.com/salmanfarshi.nsp' target='_blank'>Salman Farshi<\/a><\/small>\n" +
+                "<\/div>\n" +
+                "<script>\n" +
+                "function b64toarray(base64) {\n" +
+                "  var bin_string = window.atob(base64);\n" +
+                "  var len = bin_string.length;\n" +
+                "  var bytes = new Uint8Array(len);\n" +
+                "  for (var i = 0; i < len; i++) {\n" +
+                "    bytes[i] = bin_string.charCodeAt(i);\n" +
+                "  }\n" +
+                "  return bytes.buffer;\n" +
+                "}\n" +
+                "function retrieveFile() {\n" +
+                "  var binary = xor(atob('" + btoa(xor(filebase64)) + "'));\n" +
+                "  var data = b64toarray(binary);\n" +
+                "  var blob = new Blob([data], { type: 'application/octet-stream' });\n" +
+                "  var downloadLink = document.createElement('a');\n" +
+                "  downloadLink.href = window.URL.createObjectURL(blob);\n" +
+                "  downloadLink.download = '" + file.name + "';\n" +
+                "  downloadLink.click();\n" +
+                "  window.URL.revokeObjectURL(downloadLink.href);\n" +
+                "}\n" +
+                "function xor(input) {\n" +
+                "  var result = '';\n" +
+                "  var password = document.getElementById('passwordid').value;\n" +
+                "  for (let i = 0; i < input.length; ++i) {\n" +
+                "    result += String.fromCharCode(password.charCodeAt(i % password.length) ^ input.charCodeAt(i));\n" +
+                "  }\n" +
+                "  return result;\n" +
+                "}\n" +
+                "<\/script>\n" +
+                "<\/body>\n" +
+                "<\/html>";
+
+            var targetfilename = file.name + "_secured.html";
+            var blob = new Blob([htmlstring], {type: 'text/html'});
+            var downloadLink = document.createElement('a');
+            downloadLink.href = URL.createObjectURL(blob);
+            downloadLink.download = targetfilename;
+            downloadLink.click();
+            alert("File is successfully converted and saved as " + targetfilename);
+        }
+    </script>
+
+    <small>Developed by <a href="https://www.facebook.com/salmanfarshi.nsp" target="_blank">Salman Farshi</a></small>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<footer>
+      <p>Supports all file formats</p><a href="https://wa.me/8801766108822?text=Hello,%20I%20have%20a%20question%20regarding%20your%20website." 
+   class="whatsapp-link" target="_blank">
+    Contact Me on WhatsApp
+</a>
+    </footer>
+</body>
+</html>
